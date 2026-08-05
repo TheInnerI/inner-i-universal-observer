@@ -87,7 +87,7 @@ app.post('/v1/messages', (req, res) => {
 
   // Check if target device is online (we ping heartbeat via lastSeen)
   const targetDevice = devices.get(to)
-  const isOnline = targetDevice && (now - targetDevice.lastSeen < 60000) // 60s heartbeat
+  const isOnline = targetDevice ? (now - targetDevice.lastSeen < 60000) : false // 60s heartbeat
 
   const message: Message = {
     messageId,

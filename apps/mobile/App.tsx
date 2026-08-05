@@ -3,7 +3,7 @@ import {
   View, Text, TouchableOpacity, ScrollView, StyleSheet, ActivityIndicator,
   RefreshControl, Alert, SafeAreaView, StatusBar,
 } from 'react-native'
-import * as api from '../lib/api'
+import * as api from './src/lib/api'
 
 interface Agent { agent_id: string; display_name: string; provider: string; status: string; declared_purpose?: string }
 interface Approval { approval_id: string; agent_display_name: string; action_description: string; risk_level: string; status: string }
