@@ -144,8 +144,7 @@ pub fn generate_keypair() -> Result<GeneratedKeypair, CryptoError> {
     OsRng.fill_bytes(&mut bytes);
     let signing_key = SigningKey::from(&bytes);
     let verifying_key = signing_key.verifying_key();
-    // Zero the secret bytes from the stack
-    bytes = [0u8; 32];
+    // Key material is now in SigningKey (Zeroize on drop)
 
     Ok(GeneratedKeypair {
         public_key_hex: bytes_to_hex(verifying_key.as_bytes()),

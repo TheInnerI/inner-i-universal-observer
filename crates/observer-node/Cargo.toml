@@ -11,6 +11,10 @@ path = "src/main.rs"
 [dependencies]
 observer-core = { path = "../observer-core" }
 crypto-signing = { path = "../crypto-signing" }
+policy-engine = { path = "../policy-engine" }
+capability-broker = { path = "../capability-broker" }
+residual-engine = { path = "../residual-engine" }
+proof-store = { path = "../proof-store" }
 axum.workspace = true
 tokio.workspace = true
 tower.workspace = true

@@ -106,13 +106,13 @@ async fn migrate(pool: &SqlitePool) -> Result<(), sqlx::Error> {
             agent_id TEXT NOT NULL,
             observer_id TEXT NOT NULL,
             declared_purpose TEXT NOT NULL,
-            capability_json TEXT NOT NULL,
+            capability_json TEXT NOT NULL DEFAULT '{}',
             approval_decision_id TEXT,
             approved_at_unix_ms INTEGER,
             executed_at_unix_ms INTEGER NOT NULL,
             outcome TEXT NOT NULL,
             observer_node_id TEXT NOT NULL,
-            signature_hex TEXT NOT NULL
+            signature_hex TEXT
         );
 
         CREATE TABLE IF NOT EXISTS residuals (

@@ -1,0 +1,13 @@
+[package]
+name = "policy-engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_yaml = "0.9"
+regex = "1"
+observer-core = { path = "../observer-core" }
+tracing.workspace = true
+anyhow.workspace = true
