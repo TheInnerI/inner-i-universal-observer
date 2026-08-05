@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://innerinetcompany.com/iiop/approval-request.schema.json",
+  "title": "IIOP Approval Request",
+  "description": "An approval request sent from an Observer Node to Inner I Mobile",
+  "type": "object",
+  "required": ["approval_id", "agent_id", "agent_display_name", "action_description", "requested"],
+  "properties": {
+    "approval_id": { "type": "string", "format": "uuid" },
+    "capability_request_id": { "type": "string" },
+    "agent_id": { "type": "string" },
+    "agent_display_name": { "type": "string", "description": "e.g., 'Travel Assistant'" },
+    "action_description": { "type": "string", "description": "Plain-language: 'Book a flight to Atlanta'" },
+    "requested": {
+      "type": "object",
+      "required": ["action", "resource", "duration"],
+      "properties": {
+        "action": { "type": "string", "description": "e.g., 'email.send', 'files.read'" },
+        "resource": { "type": "string", "description": "e.g., 'alex@example.com', '~/Documents'" },
+        "maximum_amount": { "type": "number", "description": "For financial actions" },
+        "duration": { "type": "string", "enum": ["one_time", "15_minutes", "1_hour", "session", "until_revoked"] },
+        "scopes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "data_involved": { "type": "array", "items": { "type": "string" } },
+    "prohibited": { "type": "array", "items": { "type": "string" } },
+    "risk_level": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "reversibility": { "type": "string", "enum": ["none", "limited", "full", "unknown"] },
+    "created_at_unix_ms": { "type": "integer" },
+    "expires_at_unix_ms": { "type": "integer" }
+  }
+}

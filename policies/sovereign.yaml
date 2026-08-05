@@ -1,0 +1,35 @@
+# Sovereign — Maximum Protection
+# Local-first execution, no cloud dependency, deny network unless approved,
+# deny secret access by default, require signed evidence.
+protection_level: sovereign
+description: "Local-first, no cloud, deny network unless approved, require signed evidence"
+
+auto_allow: []
+
+ask_before:
+  - action_pattern: "*"
+    reason: "Sovereign mode requires approval for all actions"
+
+always_deny:
+  - action_pattern: "network.*"
+    note: "Override permitted with explicit user approval only"
+  - action_pattern: "credentials.*"
+  - action_pattern: "secret.*"
+  - action_pattern: "identity.share"
+  - action_pattern: "location.*"
+  - action_pattern: "device.camera"
+  - action_pattern: "device.microphone"
+  - action_pattern: "device.bluetooth"
+  - action_pattern: "files.share"
+  - action_pattern: "photos.share"
+  - action_pattern: "contacts.share"
+  - action_pattern: "process.spawn"
+
+emergency_protections:
+  - prevent_credential_access
+  - prevent_system_modification
+  - prevent_network_connect
+  - prevent_network_listen
+  - prevent_undeclared_capability_expansion
+  - require_signed_evidence_for_all
+  - local_execution_only

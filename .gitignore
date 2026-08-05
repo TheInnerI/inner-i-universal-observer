@@ -1,0 +1,46 @@
+# Rust
+target/
+*.rs.bk
+*.pdb
+
+# Node
+node_modules/
+dist/
+.next/
+.expo/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+.env.local
+*.pem
+*.key
+credentials.json
+
+# Build artifacts
+*.log
+coverage/
+.cache/
+
+# Mobile
+ios/Pods/
+android/.gradle/
+android/app/build/
+*.apk
+*.aab

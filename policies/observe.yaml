@@ -1,0 +1,31 @@
+# Observe — Minimal Protection
+# Record activity, notify about important actions, minimal auto-blocking.
+protection_level: observe
+description: "Record AI activity and notify me about important actions"
+
+auto_allow:
+  - action_pattern: "files.read"
+    scope: "user_documents"
+  - action_pattern: "calendar.read"
+  - action_pattern: "user.notify"
+
+ask_before:
+  - action_pattern: "email.send"
+  - action_pattern: "email.draft"
+  - action_pattern: "files.write"
+  - action_pattern: "files.delete"
+  - action_pattern: "payment.*"
+  - action_pattern: "contacts.share"
+  - action_pattern: "identity.share"
+
+always_deny:
+  - action_pattern: "credentials.*"
+  - action_pattern: "secret.*"
+  - action_pattern: "files.read"
+    scope: "browser_credentials"
+  - action_pattern: "process.spawn"
+    scope: "system"
+
+emergency_protections:
+  - prevent_credential_access
+  - prevent_system_modification

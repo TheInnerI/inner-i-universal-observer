@@ -1,0 +1,43 @@
+# Strict — High Protection
+# Deny undeclared actions, require approval for sends/spends/deletes/disclosure.
+protection_level: strict
+description: "Deny undeclared actions, require my approval for anything sensitive"
+
+auto_allow:
+  - action_pattern: "files.read"
+    scope: "user_documents"
+  - action_pattern: "calendar.read"
+  - action_pattern: "user.notify"
+
+ask_before:
+  - action_pattern: "email.*"
+  - action_pattern: "files.write"
+  - action_pattern: "files.delete"
+  - action_pattern: "files.share"
+  - action_pattern: "payment.*"
+  - action_pattern: "contacts.*"
+  - action_pattern: "identity.*"
+  - action_pattern: "location.*"
+  - action_pattern: "browser.*"
+  - action_pattern: "network.*"
+  - action_pattern: "device.*"
+  - action_pattern: "process.*"
+  - action_pattern: "model.*"
+  - action_pattern: "home.*"
+  - action_pattern: "robot.*"
+  - action_pattern: "photos.*"
+
+always_deny:
+  - action_pattern: "credentials.*"
+  - action_pattern: "secret.*"
+  - action_pattern: "files.read"
+    scope: "browser_credentials"
+  - action_pattern: "process.spawn"
+    scope: "system"
+  - action_pattern: "network.listen"
+
+emergency_protections:
+  - prevent_credential_access
+  - prevent_system_modification
+  - prevent_network_listen
+  - prevent_undeclared_capability_expansion

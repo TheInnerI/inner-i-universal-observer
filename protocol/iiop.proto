@@ -1,0 +1,294 @@
+syntax = "proto3";
+
+package iiop;
+
+// ============================================================
+// Inner I Observer Protocol (IIOP) v0.1
+// ============================================================
+// Connects human identities, mobile approval clients,
+// Observer Nodes, AI agents, applications, and devices.
+// ============================================================
+
+// ---- Core Identities ----
+
+message ObserverIdentity {
+  string observer_id = 1;         // UUID v4
+  string display_name = 2;
+  bytes ed25519_public_key = 3;   // 32 bytes
+  int64 created_at_unix_ms = 4;
+  string device_fingerprint = 5;
+}
+
+message DeviceIdentity {
+  string device_id = 1;
+  string device_type = 2;         // mobile | desktop | server | embedded
+  string os_name = 3;
+  string os_version = 4;
+  string app_version = 5;
+  bytes ed25519_public_key = 6;
+  int64 paired_at_unix_ms = 7;
+}
+
+message AgentIdentity {
+  string agent_id = 1;
+  string display_name = 2;
+  string provider = 3;            // e.g., "openai", "anthropic", "local"
+  string declared_purpose = 4;
+  string observer_node_id = 5;
+  bytes ed25519_public_key = 6;
+  int64 registered_at_unix_ms = 7;
+}
+
+message ArtifactIdentity {
+  string artifact_id = 1;
+  string artifact_type = 2;       // binary | script | model | wasm | container
+  string name = 3;
+  string version = 4;
+  bytes content_hash_sha256 = 5;  // 32 bytes
+  string observer_node_id = 6;
+  int64 registered_at_unix_ms = 7;
+}
+
+// ---- Pairing ----
+
+message PairingRequest {
+  string pairing_session_id = 1;
+  string device_name = 2;
+  string device_type = 3;
+  bytes device_public_key = 4;    // 32 bytes
+  string pairing_token = 5;       // short-lived token for verification
+  int64 expires_at_unix_ms = 6;
+  string qr_code_data = 7;        // encoded pairing payload for mobile scan
+}
+
+message PairingConfirmation {
+  string pairing_session_id = 1;
+  bytes mobile_public_key = 2;    // 32 bytes
+  bytes signed_token = 3;         // Ed25519 signature of pairing_token
+  bool approved = 4;
+  string observer_id = 5;
+}
+
+// ---- Capabilities ----
+
+message CapabilityRequest {
+  string request_id = 1;
+  string agent_id = 2;
+  IntentDeclaration intent = 3;
+  CapabilitySpec requested_capability = 4;
+  repeated string data_access = 5;
+  repeated string prohibited_actions = 6;
+  ReversibilityInfo reversibility = 7;
+  RiskAssessment risk = 8;
+  int64 expires_at_unix_ms = 9;
+}
+
+message IntentDeclaration {
+  string intent_id = 1;
+  string purpose = 2;             // human-readable purpose
+  string agent_id = 3;
+  int64 declared_at_unix_ms = 4;
+}
+
+message CapabilitySpec {
+  string action = 1;              // e.g., "email.send", "files.read"
+  string resource = 2;            // e.g., "alex@example.com", "~/Documents"
+  optional double maximum_amount = 3; // for financial actions
+  string duration = 4;            // "one_time", "15_minutes", "session", "until_revoked"
+  repeated string scopes = 5;     // granular sub-capabilities
+}
+
+message ReversibilityInfo {
+  string level = 1;               // "none" | "limited" | "full" | "unknown"
+  string explanation = 2;         // human-readable
+  string rollback_method = 3;     // if supported
+}
+
+message RiskAssessment {
+  string level = 1;               // "low" | "medium" | "high" | "critical"
+  repeated string reasons = 2;
+}
+
+message CapabilityGrant {
+  string grant_id = 1;
+  string request_id = 2;
+  string agent_id = 3;
+  CapabilitySpec granted = 4;
+  string approval_decision_id = 5;
+  int64 granted_at_unix_ms = 6;
+  int64 expires_at_unix_ms = 7;
+}
+
+message CapabilityRevocation {
+  string revocation_id = 1;
+  string grant_id = 2;
+  string agent_id = 3;
+  string reason = 4;
+  bytes signed_by = 5;
+  int64 revoked_at_unix_ms = 6;
+}
+
+// ---- Approvals ----
+
+message ApprovalRequest {
+  string approval_id = 1;
+  string capability_request_id = 2;
+  string agent_id = 3;
+  string agent_display_name = 4;
+  string action_description = 5;  // plain-language: "Book a flight to Atlanta"
+  CapabilitySpec requested = 6;
+  repeated string data_involved = 7;
+  repeated string prohibited = 8;
+  string risk_level = 9;
+  string reversibility = 10;
+  int64 created_at_unix_ms = 11;
+  int64 expires_at_unix_ms = 12;
+}
+
+message ApprovalDecision {
+  string decision_id = 1;
+  string approval_id = 2;
+  DecisionType decision = 3;
+  optional int64 duration_seconds = 4;  // for ALLOW_FOR_DURATION
+  string observer_id = 5;
+  bytes signature = 6;                  // Ed25519 signature
+  optional bytes biometric_proof = 7;   // platform biometric attestation
+  int64 decided_at_unix_ms = 8;
+}
+
+enum DecisionType {
+  DECISION_UNSPECIFIED = 0;
+  ALLOW_ONCE = 1;
+  ALLOW_FOR_DURATION = 2;
+  ALLOW_UNTIL = 3;
+  ALWAYS_ALLOW_WITHIN_SCOPE = 4;
+  DENY_ONCE = 5;
+  ALWAYS_DENY = 6;
+  REQUEST_MORE_INFORMATION = 7;
+  STOP_AGENT = 8;
+}
+
+// ---- Emergency Stop ----
+
+message EmergencyStop {
+  string stop_id = 1;
+  string observer_id = 2;
+  string reason = 3;
+  bytes signature = 4;                  // signed by observer
+  int64 issued_at_unix_ms = 5;
+  repeated string target_agent_ids = 6; // empty = all
+}
+
+// ---- Events & Residuals ----
+
+message ObservedEvent {
+  string event_id = 1;
+  string session_id = 2;
+  string agent_id = 3;
+  string event_type = 4;
+  string description = 5;
+  string capability_used = 6;
+  string outcome = 7;                   // "success" | "failure" | "blocked" | "partial"
+  bytes evidence_hash = 8;
+  int64 observed_at_unix_ms = 9;
+}
+
+message ResidualRecord {
+  string residual_id = 1;
+  string event_id = 2;
+  string residual_type = 3;             // e.g., "intent_divergence", "capability_violation"
+  string plain_language_summary = 4;
+  string expected_behavior = 5;
+  string observed_behavior = 6;
+  string severity = 7;                  // "low" | "medium" | "high" | "critical"
+  string response = 8;                  // "blocked" | "allowed_with_warning" | "logged"
+  bool data_exposed = 9;
+  bool reversible = 10;
+  string correction_status = 11;        // "none" | "pending" | "complete" | "partial"
+  bytes evidence_hash = 12;
+  int64 detected_at_unix_ms = 13;
+}
+
+// ---- Consequences ----
+
+message ConsequenceRecord {
+  string consequence_id = 1;
+  string consequence_type = 2;          // "email_sent", "file_deleted", "purchase_completed"
+  string description = 3;
+  string affected_resource = 4;
+  string intent_id = 5;
+  string grant_id = 6;
+  string event_id = 7;
+  string residual_id = 8;
+  string rollback_id = 9;
+  int64 recorded_at_unix_ms = 10;
+}
+
+// ---- Receipts & Proof ----
+
+message ExecutionReceipt {
+  string receipt_id = 1;
+  string agent_id = 2;
+  string observer_id = 3;
+  string declared_purpose = 4;
+  CapabilitySpec capability = 5;
+  string approval_decision_id = 6;
+  int64 approved_at_unix_ms = 7;
+  int64 executed_at_unix_ms = 8;
+  string outcome = 9;
+  repeated string consequence_ids = 10;
+  repeated string residual_ids = 11;
+  string rollback_status = 12;
+  string artifact_id = 13;
+  string observer_node_id = 14;
+  bytes signature = 15;
+  repeated bytes evidence_hashes = 16;
+}
+
+message ProofBundle {
+  string bundle_id = 1;
+  string observer_id = 2;
+  repeated ExecutionReceipt receipts = 3;
+  repeated ResidualRecord residuals = 4;
+  repeated ConsequenceRecord consequences = 5;
+  repeated ApprovalDecision decisions = 6;
+  bytes bundle_signature = 7;
+  int64 exported_at_unix_ms = 8;
+}
+
+message ProofVerificationResult {
+  string bundle_id = 1;
+  bool verified = 2;
+  repeated string receipt_ids_verified = 3;
+  repeated string receipt_ids_failed = 4;
+  bool signature_valid = 5;
+  bool hash_chain_intact = 6;
+  string verifier_identity = 7;
+  int64 verified_at_unix_ms = 8;
+}
+
+// ---- Protocol Envelope ----
+
+message IIOPEnvelope {
+  string protocol_version = 1;          // e.g., "0.1"
+  string message_id = 2;                // UUID v4
+  string message_type = 3;              // fully-qualified protobuf message type
+  int64 timestamp_unix_ms = 4;
+  string sender_id = 5;
+  string recipient_id = 6;
+  string observer_id = 7;
+  string session_id = 8;
+  string parent_message_id = 9;         // for request/response correlation
+  bytes payload_hash_sha256 = 10;       // hash of payload before serialization
+  bytes previous_record_hash = 11;      // hash-chain link
+  bytes signature = 12;                 // Ed25519 signature over envelope
+  EncryptionMetadata encryption = 13;
+  bytes payload = 14;                   // serialized protobuf message
+}
+
+message EncryptionMetadata {
+  string algorithm = 1;                 // e.g., "x25519-xsalsa20-poly1305"
+  bytes sender_public_key = 2;
+  bytes recipient_public_key = 3;
+  bytes nonce = 4;
+}

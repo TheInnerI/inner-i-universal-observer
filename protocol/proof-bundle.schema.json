@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://innerinetcompany.com/iiop/proof-bundle.schema.json",
+  "title": "IIOP Proof Bundle",
+  "description": "Exportable, independently-verifiable bundle of execution receipts and evidence",
+  "type": "object",
+  "required": ["bundle_id", "observer_id", "receipts"],
+  "properties": {
+    "bundle_id": { "type": "string", "format": "uuid" },
+    "observer_id": { "type": "string" },
+    "receipts": {
+      "type": "array",
+      "items": { "$ref": "receipt.schema.json#" }
+    },
+    "residuals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "residual_id": { "type": "string" },
+          "residual_type": { "type": "string" },
+          "plain_language_summary": { "type": "string" },
+          "severity": { "type": "string", "enum": ["low", "medium", "high", "critical"] }
+        }
+      }
+    },
+    "consequences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "consequence_id": { "type": "string" },
+          "consequence_type": { "type": "string" },
+          "description": { "type": "string" },
+          "affected_resource": { "type": "string" }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": { "$ref": "approval.schema.json#" }
+    },
+    "bundle_signature": { "type": "string" },
+    "exported_at_unix_ms": { "type": "integer" }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "inner-i-universal-observer",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Universal permission, proof, and consequence layer for personal AI",
+  "repository": "https://github.com/TheInnerI/inner-i-universal-observer",
+  "license": "Open Architecture",
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

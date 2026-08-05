@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://innerinetcompany.com/iiop/receipt.schema.json",
+  "title": "IIOP Execution Receipt",
+  "description": "Signed proof of an AI agent's executed action",
+  "type": "object",
+  "required": ["receipt_id", "agent_id", "observer_id", "declared_purpose", "outcome"],
+  "properties": {
+    "receipt_id": { "type": "string", "format": "uuid" },
+    "agent_id": { "type": "string" },
+    "observer_id": { "type": "string" },
+    "declared_purpose": { "type": "string" },
+    "capability": {
+      "type": "object",
+      "properties": {
+        "action": { "type": "string" },
+        "resource": { "type": "string" },
+        "duration": { "type": "string" }
+      }
+    },
+    "approval_decision_id": { "type": "string" },
+    "approved_at_unix_ms": { "type": "integer" },
+    "executed_at_unix_ms": { "type": "integer" },
+    "outcome": { "type": "string", "enum": ["success", "failure", "blocked", "partial"] },
+    "consequence_ids": { "type": "array", "items": { "type": "string" } },
+    "residual_ids": { "type": "array", "items": { "type": "string" } },
+    "rollback_status": { "type": "string", "enum": ["none", "pending", "complete", "partial", "unavailable"] },
+    "observer_node_id": { "type": "string" },
+    "signature": { "type": "string", "description": "Base64-encoded Ed25519 signature" },
+    "evidence_hashes": { "type": "array", "items": { "type": "string" } }
+  }
+}
