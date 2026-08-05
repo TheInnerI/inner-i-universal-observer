@@ -6,7 +6,7 @@
 use observer_core::receipt::{ExecutionReceipt, ProofBundle};
 use observer_core::residual::{ResidualRecord, ConsequenceRecord};
 use observer_core::approval::ApprovalDecision;
-use crypto_signing::signing::chain_hash;
+use crypto_signing::identity::hex_to_bytes;
 use ed25519_dalek::{SigningKey, Signer};
 use sha2::{Sha256, Digest};
 
@@ -106,7 +106,7 @@ impl ProofStore {
 
     /// Verify a Proof Bundle's signature independently.
     pub fn verify_bundle(bundle: &ProofBundle, public_key_hex: &str) -> Result<bool, String> {
-        let vk_bytes = crypto_signing::identity::hex_to_bytes(public_key_hex)
+        let vk_bytes = hex_to_bytes(public_key_hex)
             .map_err(|e| format!("Invalid public key: {}", e))?;
         let vk = ed25519_dalek::VerifyingKey::from_bytes(&vk_bytes)
             .map_err(|e| format!("Invalid verifying key: {}", e))?;

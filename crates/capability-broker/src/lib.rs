@@ -4,6 +4,7 @@
 //! against the active policy, generates approval requests for human review,
 //! and tracks active grants with expiration.
 
+#[allow(unused_imports)]
 use observer_core::capability::{CapabilitySpec, CapabilityDuration};
 use observer_core::types::ProtectionLevel;
 use policy_engine::{Policy, PolicyDecision};

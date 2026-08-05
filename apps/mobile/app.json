@@ -1,0 +1,14 @@
+{
+  "expo": {
+    "name": "Inner I",
+    "slug": "inner-i-mobile",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": { "backgroundColor": "#0a0a0f" },
+    "ios": { "supportsTablet": true, "infoPlist": { "NSFaceIDUsageDescription": "Inner I uses Face ID to confirm high-risk approvals" } },
+    "android": { "adaptiveIcon": { "backgroundColor": "#0a0a0f" } },
+    "plugins": ["expo-secure-store", "expo-local-authentication"]
+  }
+}
