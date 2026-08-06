@@ -16,10 +16,10 @@ A universal permission, proof, and consequence layer for personal AI. Four produ
 
 | Product | Type | Stack | Status |
 |---------|------|-------|--------|
-| **Inner I Mobile** | Phone-first approval & proof app | React Native / Expo | Scaffolded |
+| **Inner I Mobile** | Phone-first approval & proof app | React Native / Expo | Built (7 screens) |
 | **Inner I Observer Node** | Local enforcement engine | Rust | Live API (30 endpoints) |
-| **Inner I Control Center** | Advanced web dashboard | Next.js / TypeScript | Scaffolded |
-| **Inner I Relay** | Optional encrypted relay | Express / TypeScript | Scaffolded |
+| **Inner I Control Center** | Advanced web dashboard | Next.js / TypeScript | Built (5 tabs, live data) |
+| **Inner I Relay** | Optional encrypted relay | Express / TypeScript | Built (tsc clean, starts live) |
 
 Connected through **IIOP** — the Inner I Observer Protocol (24 message types).
 
@@ -63,6 +63,26 @@ POST   /v1/proofs/export             — Export Proof Bundle
 POST   /v1/proofs/verify             — Independently verify Proof Bundle
 POST   /v1/emergency-stop            — Stop all agents, revoke all grants
 ```
+
+### Control Center (Next.js, builds to static HTML)
+
+| Tab | Shows |
+|-----|-------|
+| Overview | Status cards: agents, pending approvals, residuals, receipts |
+| Agents | Agent list with stop/revoke, active grants display |
+| Approvals | Pending approvals with Allow/Deny/Stop buttons |
+| Residuals | Violation feed with severity badges |
+| Receipts | Signed execution receipts with verification status |
+
+Features: 5-second auto-polling, STOP ALL emergency button, dark theme, zero backend deps.
+
+### Mobile App (React Native/Expo, 7 screens)
+
+Home, Approvals, Agents, Activity, Residuals, Proof, Settings — all with live Observer Node data. Approval cards with Allow/Deny/Stop, badge counts for pending approvals + critical residuals, pull-to-refresh.
+
+### Relay (Express/TypeScript, starts on :7413)
+
+Device registration with public keys, encrypted message relay (payloads never decrypted), offline message queuing with heartbeat-based delivery, device revocation with cleanup.
 
 ### Protection Levels
 
@@ -164,11 +184,11 @@ OBSERVER NODE    AGENT/SDK     CONTROL CENTER
 |-------|--------|------|
 | **Phase 1:** IIOP + Identity | ✅ Complete | Protocol definitions, Ed25519 signing, crypt |
 | **Phase 2:** Observer Node Engine | ✅ Complete | Policy engine, capability broker, 30 API endpoints |
-| **Phase 3:** Mobile App | ✅ Scaffolded | Expo/RN project with deps (QR, biometric, secure-store) |
+| **Phase 3:** Mobile App | ✅ Built | 7-tab RN app: Home, Approvals, Agents, Activity, Residuals, Proof, Settings |
 | **Phase 4:** Residuals + Proof | ✅ Complete | Residual engine, proof store, tamper detection |
 | **Phase 5:** Wake-Up Demo | ✅ Complete | `examples/demo.sh` — safe + violating agent workflow |
-| **Phase 6:** Control Center | ✅ Scaffolded | Next.js project with dashboard deps |
-| **Phase 7:** Relay + Hardening | ✅ Scaffolded | Express relay service |
+| **Phase 6:** Control Center | ✅ Built | 5-tab Next.js dashboard: Overview, Agents, Approvals, Residuals, Receipts |
+| **Phase 7:** Relay + Hardening | ✅ Built | Express relay: device registry, encrypted forwarding, offline queue |
 
 ---
 
