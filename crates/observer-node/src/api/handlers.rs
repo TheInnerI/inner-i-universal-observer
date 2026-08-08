@@ -173,7 +173,7 @@ pub async fn verify_proof(Json(_body): Json<Value>) -> Json<Value> {
 
 // ── Emergency ──
 pub async fn emergency_stop(State(state): State<AppState>, Json(_body): Json<Value>) -> Response {
-    let stop_id = Uuid::new_v4().to_string(); let now = chrono::Utc::now().timestamp_millis();
+    let stop_id = Uuid::new_v4().to_string();
     let agents: Vec<String> = sqlx::query_as::<_,(String,)>("SELECT agent_id FROM agent_identities WHERE status='active'").fetch_all(&state.pool).await.unwrap_or_default().iter().map(|(id,)|id.clone()).collect();
     let mut stopped = 0;
     for id in &agents { stopped += state.capability_broker.lock().unwrap().revoke_agent(id); sqlx::query("UPDATE agent_identities SET status='stopped' WHERE agent_id=?").bind(id).execute(&state.pool).await.ok(); }
